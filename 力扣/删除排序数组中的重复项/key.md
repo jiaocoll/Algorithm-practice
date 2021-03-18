@@ -44,3 +44,28 @@ int removeDuplicates(int* nums, int numsSize){
 > 执行用时：20 ms, 在所有 C 提交中击败了97.52%的用户
 >
 > 内存消耗：8.1 MB, 在所有 C 提交中击败了95.97%的用户
+
+Go语言代码如下：
+
+```go
+func removeDuplicates(nums []int) int {
+    n := len(nums)
+    if n < 2{
+        return n
+    }
+    left := 1
+    right:= 1
+    for right < n {
+        if (nums[right] != nums[right-1]){
+            nums[left] = nums[right]
+            left++
+        }
+        right++
+    }
+    return left
+}
+```
+
+> 执行用时：0 ms, 在所有 Go 提交中击败了100.00%的用户
+>
+> 内存消耗：4.5 MB, 在所有 Go 提交中击败了100.00%的用户
