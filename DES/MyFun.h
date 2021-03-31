@@ -114,7 +114,7 @@ void mylun(char* L,char* R,char* SK,int t)
     printf("%d轮S盒输出=",t+1);
     puts(out3); //输出经过S盒运算后的结果
     myPermutation(out3,out4,32,*P);  //置换P
-    printf("f(R%d,K%d)=",t,t+1);
+    printf("lun(R%d,K%d)=",t,t+1);
     puts(out4);
     strcpy(temp,R);      //保存旧的R
     myXOR(L,out4,32,R);  //更新R
@@ -150,7 +150,7 @@ char *encrypt(char* M,char* K)
     strncpy(out, R, 32);   //L16 + R16
     strncpy(out+32, L, 32);
     myPermutation(out,Cipher,64,*C_IP);    //逆IP置换
-    printf("\n加密后的密文：");
+    printf("\n加密后的密文二进制形式：");
     puts(Cipher);
     char *CipherTmp = Cipher; //将char数组转换成指针数组
     return CipherTmp;   //因为C语言无法返回数组，所以我们返回一个指针数组
@@ -181,8 +181,10 @@ char *decrypt(char* MI,char* K){
     strncpy(out, R, 32);   //L16 + R16
     strncpy(out+32, L, 32);
     myPermutation(out,Ming,64,*C_IP);    //逆IP置换
-    printf("\n解密后的明文：");
+    printf("\n解密后的明文二进制形式：");
     puts(Ming);
-    char *MingTmp = Ming;   //将char数组转换成指针数组
+    char *MingTmp = Ming; //将char数组转换成指针数组
     return MingTmp; //因为C语言无法返回数组，所以我们返回一个指针数组
 }
+
+
