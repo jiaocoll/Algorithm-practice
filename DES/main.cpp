@@ -112,16 +112,14 @@ int main(){
         cout<< "解密后的明文:";
         cout << output << endl;
         return 0;
-    }
-    else{
-        str = str;
+    }else{
         string  bstr = StrToBitStr(str);
         strcpy(data.M,bstr.c_str());
         strcpy(data.K,bkey.c_str());
         data.MI = encrypt(data.M,data.K);  //加密函数，并返回加密后的密文
         tmpbitstr = decrypt(data.MI,data.K);   //解密函数，并返回解密后的明文
 
-        output = BitStrToStr(tmpbitstr);
+        output += BitStrToStr(tmpbitstr);
         cout<< "解密后的明文:";
         cout << output << endl;
         return 0;
