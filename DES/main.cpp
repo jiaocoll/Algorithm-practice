@@ -13,6 +13,7 @@ struct Data
     string tmpbitstr;
     char M[65];
     char K[65];
+    char MI1[65];
     char *MI;
     char *Ming;
 };
@@ -62,78 +63,113 @@ string BitStrToStr(string bstr)
 
 int main(){
     string str;
-    string key;
+    string key,bkey;
     string tmpbitstr;
-    string output;
+    string outputMing;
+    string outputMi;
     Data data;
     int num1,num2,j;
-    cout<< "请输入要加密的字符:";
-    getline(cin,str);
-    cout<<"你输入的字符是:"<<str<<endl;
-    cout<< "请输入8位字符的密钥:";
-    getline(cin,key);
-    string bkey = StrToBitStr(key);
-    if(str.length()>8){
-        num1 = ((str.length()/8)+1) * 8 - str.length();
-        // cout<<num1<<endl;
-        string tstr;
-        for(int k =0;k<num1;k++){
-            tstr += ' ';
-        }
-        // cout<<tstr<<endl;
-        str += tstr;
-        // cout<<str<<endl;
-        // cout<<str.length()<<endl;
-
-        num2 = str.length()/8;
-
-        for (int i = 0;i<num2;i++){
-            string tmpstr8;
-            for(j=i*8;j< (8*i+8);j++){
-                // if(j == 0){
-                //     tmpstr8 += str[j];
-                //     cout<<j<<str[j]<<endl;
-                // }
-                // if(j%8 !=0 && j > 0){
-                // tmpstr8 += str[j];
-                // cout<<j<<str[j]<<endl;
-                tmpstr8 += str[j];
-                // cout<<j<<str[j]<<endl;
-
+    char option;
+    cout<<"请输入您的选项：1-加密，2-解密：";
+    cin >> option;
+    cin.ignore();
+    switch (option)
+    {
+    case '1':
+        cout<< "请输入要加密的字符:";
+        getline(cin,str);
+        cout<<"你输入的字符是:"<<str<<endl;
+        cout<< "请输入8位字符的密钥:";
+        getline(cin,key);
+        bkey = StrToBitStr(key);
+        if(str.length()>8){
+            num1 = ((str.length()/8)+1) * 8 - str.length();
+            // cout<<num1<<endl;
+            string tstr;
+            for(int k =0;k<num1;k++){
+                tstr += ' ';
             }
-            string  bstr = StrToBitStr(tmpstr8);
+            // cout<<tstr<<endl;
+            str += tstr;
+            // cout<<str<<endl;
+            // cout<<str.length()<<endl;
+
+            num2 = str.length()/8;
+
+            for (int i = 0;i<num2;i++){
+                string tmpstr8;
+                for(j=i*8;j< (8*i+8);j++){
+                    // if(j == 0){
+                    //     tmpstr8 += str[j];
+                    //     cout<<j<<str[j]<<endl;
+                    // }
+                    // if(j%8 !=0 && j > 0){
+                    // tmpstr8 += str[j];
+                    // cout<<j<<str[j]<<endl;
+                    tmpstr8 += str[j];
+                    // cout<<j<<str[j]<<endl;
+
+                }
+                string  bstr = StrToBitStr(tmpstr8);
+                strcpy(data.M,bstr.c_str());
+                strcpy(data.K,bkey.c_str());
+                tmpbitstr = encrypt(data.M,data.K);  //加密函数，并返回加密后的密文
+                // tmpbitstr = decrypt(data.MI,data.K);   //解密函数，并返回解密后的明文
+                outputMi += tmpbitstr;    
+                // outputMi += BitStrToStr(tmpbitstr);
+            }
+            cout<< "加密后的二进制密文:";
+            cout << outputMi << endl;
+            break;
+        }else{
+            string  bstr = StrToBitStr(str);
             strcpy(data.M,bstr.c_str());
             strcpy(data.K,bkey.c_str());
-            data.MI = encrypt(data.M,data.K);  //加密函数，并返回加密后的密文
-            tmpbitstr = decrypt(data.MI,data.K);   //解密函数，并返回解密后的明文
-                
-            output += BitStrToStr(tmpbitstr);
+            tmpbitstr = encrypt(data.M,data.K);  //加密函数，并返回加密后的密文
+            // tmpbitstr = decrypt(data.MI,data.K);   //解密函数，并返回解密后的明文
+            outputMi += tmpbitstr;
+            // outputMi += BitStrToStr(tmpbitstr);
+            cout<< "加密后的二进制密文:";
+            cout << outputMi << endl;
+            // cout << tmpbitstr << endl;
         }
-        cout<< "解密后的明文:";
-        cout << output << endl;
-        return 0;
-    }else{
-        string  bstr = StrToBitStr(str);
-        strcpy(data.M,bstr.c_str());
-        strcpy(data.K,bkey.c_str());
-        data.MI = encrypt(data.M,data.K);  //加密函数，并返回加密后的密文
-        tmpbitstr = decrypt(data.MI,data.K);   //解密函数，并返回解密后的明文
+    break;
+    case '2':
+        cout<< "请输入要解密的字符:";
+        getline(cin,str);
+        cout<<"你输入的字符是:"<<str<<endl;
+        cout<< "请输入8位字符的密钥:";
+        getline(cin,key);
+        bkey = StrToBitStr(key);
+        if(str.length()>64){
+            num2 = str.length()/64;
 
-        output += BitStrToStr(tmpbitstr);
-        cout<< "解密后的明文:";
-        cout << output << endl;
-        return 0;
+            for (int i = 0;i<num2;i++){
+                string tmpstr8;
+                for(j=i*64;j< (64*i+64);j++){
+                    tmpstr8 += str[j];
+                }
+                // cout<<tmpstr8<<endl;
+                strcpy(data.MI1,tmpstr8.c_str());
+                strcpy(data.K,bkey.c_str());
+                tmpbitstr = decrypt(data.MI1,data.K);   //解密函数，并返回解密后的明文
+                 
+                outputMing += BitStrToStr(tmpbitstr);
+            }
+            cout<< "解密后的明文:";
+            cout << outputMing << endl;
+        }else{
+            strcpy(data.MI1,str.c_str());
+            strcpy(data.K,bkey.c_str());
+            tmpbitstr = decrypt(data.MI1,data.K);   //解密函数，并返回解密后的明文
+            outputMing += BitStrToStr(tmpbitstr);
+            cout<< "解密后的明文:";
+            cout << outputMing << endl;
+            // cout << data.MI1 << endl;
+        }
+    break;
+    default:
+        break;
     }
-
-
-    // char M[65];
-    // char K[65];
-    // char *MI;
-    // char *Ming;
-    // strcpy(M,bstr.c_str());
-    // strcpy(K,bkey.c_str());
-
-    // cout<< "解密后的明文:";
-    // cout << output << endl;
-    // return 0;
+    return 0;
 }

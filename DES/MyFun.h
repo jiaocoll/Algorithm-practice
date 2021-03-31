@@ -95,14 +95,14 @@ void mylun(char* L,char* R,char* SK,int t)
     int i=0,j=0;
     int row,col;
     char out1[49]= {0},out2[49]= {0},out3[33]= {0},out4[33]= {0},temp[33]= {0};
-    printf("K%d=",t+1);
-    puts(SK);   //输出本轮密钥
+    // printf("K%d=",t+1);
+    // puts(SK);   //输出本轮密钥
     myPermutation(R,out1,48,*E);  //将32位扩展成48位
-    printf("E(R%d)=",t);
-    puts(out1); //输出扩展后的R
+    // printf("E(R%d)=",t);
+    // puts(out1); //输出扩展后的R
     myXOR(out1,SK,48,out2); //将扩展后的R与子密钥异或
-    printf("E(R%d)^K%d=",t,t+1);
-    puts(out2); //输出异或后的结果
+    // printf("E(R%d)^K%d=",t,t+1);
+    // puts(out2); //输出异或后的结果
     for(i=0; i<8; i++)  //S盒代换，将每个48位分成8个6位的块，每一块经过一次S盒运算，由6位产生4位
     {
         row = ((out2[i*6]-'0')<<1)+(out2[i*6+5]-'0');   //第1，6位结合转换成十进制数组成行号
@@ -111,15 +111,15 @@ void mylun(char* L,char* R,char* SK,int t)
             *(out3+(i*4+3-j))=((S_Box[i][row*16+col]>>j)&1)+'0';  //将取到的S盒数据填到S盒输出的指定位置，先进行十进制转二进制
     }
     *(out3+32)='\0';    //结束标识
-    printf("%d轮S盒输出=",t+1);
-    puts(out3); //输出经过S盒运算后的结果
+    // printf("%d轮S盒输出=",t+1);
+    // puts(out3); //输出经过S盒运算后的结果
     myPermutation(out3,out4,32,*P);  //置换P
-    printf("lun(R%d,K%d)=",t,t+1);
-    puts(out4);
+    // printf("lun(R%d,K%d)=",t,t+1);
+    // puts(out4);
     strcpy(temp,R);      //保存旧的R
     myXOR(L,out4,32,R);  //更新R
-    printf("R%d=",t+1);
-    puts(R);
+    // printf("R%d=",t+1);
+    // puts(R);
     strcpy(L,temp);      //更新L
 }
 
@@ -135,23 +135,23 @@ char *encrypt(char* M,char* K)
     int i=0;
     mySubkey(K,SK);                //产生16轮子密钥
     myPermutation(M,out,64,*IP);   //初始置换IP
-    printf("\n\n-------------------------------加密过程-------------------------------\n\n");
-    printf("原始的明文：");
-    puts(M);
-    printf("IP置换：");
-    puts(out);
+    // printf("\n\n-------------------------------加密过程-------------------------------\n\n");
+    // printf("原始的明文：");
+    // puts(M);
+    // printf("IP置换：");
+    // puts(out);
     strcpy(L,out);      //L0
     strcpy(R,out+32);   //R0
     for(i=0; i<16; i++)
     {
-        printf("\n-------------------------------第%d轮------------------------------------\n",i+1);
+        // printf("\n-------------------------------第%d轮------------------------------------\n",i+1);
         mylun(L,R,*(SK+i),i);   //轮函数迭代
     }
     strncpy(out, R, 32);   //L16 + R16
     strncpy(out+32, L, 32);
     myPermutation(out,Cipher,64,*C_IP);    //逆IP置换
-    printf("\n加密后的密文二进制形式：");
-    puts(Cipher);
+    // printf("\n加密后的密文二进制形式：");
+    // puts(Cipher);
     char *CipherTmp = Cipher; //将char数组转换成指针数组
     return CipherTmp;   //因为C语言无法返回数组，所以我们返回一个指针数组
 }
@@ -166,23 +166,23 @@ char *decrypt(char* MI,char* K){
     int i=0;
     mySubkey(K,SK);                //产生16轮子密钥
     myPermutation(MI,out,64,*IP);   //初始置换IP
-    printf("\n\n-------------------------------解密过程-------------------------------\n\n");
-    printf("传递来的密文：");
-    puts(MI);
-    printf("IP置换：");
-    puts(out);
+    // printf("\n\n-------------------------------解密过程-------------------------------\n\n");
+    // printf("传递来的密文：");
+    // puts(MI);
+    // printf("IP置换：");
+    // puts(out);
     strcpy(L,out);      //L0
     strcpy(R,out+32);   //R0
     for(i=15; i>=0; i--)
     {
-        printf("\n-------------------------------第%d轮------------------------------------\n",i+1);
+        // printf("\n-------------------------------第%d轮------------------------------------\n",i+1);
         mylun(L,R,*(SK+i),i);
     }
     strncpy(out, R, 32);   //L16 + R16
     strncpy(out+32, L, 32);
     myPermutation(out,Ming,64,*C_IP);    //逆IP置换
-    printf("\n解密后的明文二进制形式：");
-    puts(Ming);
+    // printf("\n解密后的明文二进制形式：");
+    // puts(Ming);
     char *MingTmp = Ming; //将char数组转换成指针数组
     return MingTmp; //因为C语言无法返回数组，所以我们返回一个指针数组
 }
