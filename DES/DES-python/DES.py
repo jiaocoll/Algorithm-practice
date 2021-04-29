@@ -27,12 +27,12 @@ def write_file(filename,message):
 def str_bit( message ):
     '''
     message ：字符串
-    return ：将读入的字符串序列转化成01比特流序列
+    return ：将读入的字符串序列转化成二进制比特流序列
     '''
     bits = ""
     for i in message:
-        asc2i = bin(ord(i))[2:] #bin将十进制数转二进制返回带有0b的01字符串
-        '''为了统一每一个字符的01bit串位数相同，将每一个均补齐8位'''
+        asc2i = bin(ord(i))[2:] #bin将十进制数转二进制返回带有0b的二进制字符串，从第三位开始取，因为前两位是进制位0b
+        '''为了统一每一个字符的二进制bit串位数相同，将每一个均补齐8位'''
         for j in range(8-len(asc2i)):
             asc2i = '0' + asc2i
         bits += asc2i
@@ -41,7 +41,7 @@ def str_bit( message ):
 def process_key2(key):
     '''
     key : 输入的密钥字符串
-    return : 64bit 01序列密钥 直接一个字符补8位
+    return : 64bit 二进制序列密钥 直接一个字符补8位
     '''
     bin_key =str_bit(key) 
     ans = len(bin_key)
@@ -228,8 +228,10 @@ def IP_RE_change(bits):
     return ip_re
     return ip_re
    
+   
 def des_encrypt(bits,key):
     '''
+    加密函数,每次加密64bit
     bits : 分组64bit 01明文字符串
     key : 64bit01密钥
     return : 加密得到64bit 01密文序列
@@ -248,6 +250,7 @@ def des_encrypt(bits,key):
 
 def des_decrypt(bits,key):
     '''
+     解密函数,每次解密64bit
     bits : 分组64bit 01加密字符串
     key : 64bit01密钥
     return : 解密得到64bit 01密文序列
@@ -276,6 +279,7 @@ def bit_str(bits):
 
 def all_des_encrypt(message,key):
     '''
+    将message进行分组,每64一组，然后每组分别进行加密，最后将加密后的内容进行拼接
     message : 读入明文字符串
     key : 读入密钥串
     returns : 密文01序列
@@ -290,6 +294,7 @@ def all_des_encrypt(message,key):
 
 def all_des_decrypt(message,key):
     '''
+    将二进制bit串进行分组,每64一组，然后每组分别进行解密，最后将解密后的内容进行拼接
     message : 读入密文字符串
     key : 读入密钥串
     returns : 明文01序列串
@@ -313,7 +318,7 @@ def start():
         Cipherfile = input()
         print("Input the password you want to set:",end='')
         key = input()
-        print("Plaintext:  "+message)
+        print("Plaintext:\n"+message)
         print("Plaintext 01bits:   " + str_bit(message))
         result = all_des_encrypt(message, key)
         print("\nCiphertext 01bits:  "+result)
@@ -332,7 +337,7 @@ def start():
         result = all_des_decrypt(message, key)
         print("\nPlaintext 01bits:    "+result)
         result_str = bit_str(result) 
-        print("Plaintext:   " + result_str)
+        print("Plaintext:\n" + result_str)
     elif t == '2':
         print("Exit!")
         return True 
